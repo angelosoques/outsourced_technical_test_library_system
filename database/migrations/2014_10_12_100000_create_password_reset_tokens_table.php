@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('table_libraries', function (Blueprint $table) {
-            $table->id('library_id');
-            $table->string('library_name', 50);
-            $table->string('library_address', 225);
+        Schema::create('password_reset_tokens', function (Blueprint $table) {
+            $table->string('email')->primary();
+            $table->string('token');
+            $table->timestamp('created_at')->nullable();
         });
     }
 
@@ -23,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('table_libraries');
+        Schema::dropIfExists('password_reset_tokens');
     }
 };
