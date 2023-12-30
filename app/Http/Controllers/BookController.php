@@ -37,7 +37,14 @@ class BookController extends Controller
 
         return $book === null ? $this->createResponse('Book not found', 404) : $this->createResponse('success', 200, new BookResource($book));
     }
-
+    
+    /**
+     * Method insertBook
+     *
+     * @param Request $request [explicite description]
+     *
+     * @return void
+     */
     public function insertBook(Request $request)
     {
         try {
@@ -62,7 +69,14 @@ class BookController extends Controller
             return $this->createResponse($message, 500);
         }
     }
-
+    
+    /**
+     * Method updateBook
+     *
+     * @param Request $request [explicite description]
+     *
+     * @return void
+     */
     public function updateBook(Request $request) {
         try {
             $validatedData = $request->validate([

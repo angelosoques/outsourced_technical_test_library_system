@@ -8,10 +8,10 @@
 <body>
     <h1>Member Profile</h1>
 
-    @if(isset($data))
-        <?php dd($data) ?>
+    @if(isset($borrowedBooks))
+        <?php dd($borrowedBooks) ?>
         <ul>
-            @foreach($data as $item)
+            @foreach($borrowedBooks as $item)
                 <li>{{ $item }}</li>
             @endforeach
         </ul>

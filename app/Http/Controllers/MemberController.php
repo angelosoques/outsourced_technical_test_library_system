@@ -49,7 +49,7 @@ class MemberController extends Controller
     {
         try {
             $validatedData = $request->validate([
-                'email_address' => 'required|string|regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
+                'email_address' => 'required|string|regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/|unique:members,email_address,NULL,id,library_id,' . $request->input('library_id'),
                 'password'      => 'required|string',
                 'first_name'    => 'required|string|max:50',
                 'last_name'     => 'required|string|max:50',
@@ -85,7 +85,7 @@ class MemberController extends Controller
         try {
             $validatedData = $request->validate([
                 'id'            => 'required|integer|exists:members,id',
-                'email_address' => 'sometimes|string|regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
+                'email_address' => 'sometimes|string|regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/|unique:members,email_address,' . $request->input('id') . ',id,library_id,' . $request->input('library_id'),
                 'password'      => 'required|string',
                 'first_name'    => 'sometimes|string|min:1|max:50',
                 'last_name'     => 'sometimes|string|min:1|max:50',
@@ -108,15 +108,14 @@ class MemberController extends Controller
             }
 
             $member->save();
-
-            return PARENT::createResponse('Member updated successfully', 200, new MemberResource($member));
+            return PARENT::createResponse('Member updated successfully', 200);
         }catch (Exception $e) {
             if ($e->getCode() !== 0) {
                 $message = 'Member update failed';
             } else {
                 $message = $e->getMessage();
             }
-            return PARENT::createResponse($message, 500);
+            return PARENT::createResponse($e->getMessage(), 500);
         }
     }
 }

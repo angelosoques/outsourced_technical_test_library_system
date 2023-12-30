@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\BorrowBooksController;
 use App\Http\Controllers\MemberController;
 use Illuminate\Support\Facades\Route;
 
@@ -28,7 +29,9 @@ Route::get('/books/{libraryId}', function ($id) {
 
 Route::get('/profile/{memberId}', function ($id) {
     $memberController = new MemberController();
+    $borrowedBooks = new BorrowBooksController();
     $data = $memberController->getSpecificMember($id);
+    $borrowedBooks = $borrowedBooks->getBorrowedBooksOfMember($id);
 
-    return view('/member/profile', ['data' => $data]);
+    return view('/member/profile', ['memberdata' => $data, 'borrowedBooks' => $borrowedBooks]);
 });

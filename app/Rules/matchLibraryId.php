@@ -24,10 +24,10 @@ class matchLibraryId implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         foreach ($this->bookIds as $bookId) {
-            $bookLibraryId = Book::where('id', $bookId)->select('library_id')->get();
-            $memberLibraryId = Book::where('id', $this->memberId)->select('library_id')->get();
+            $bookLibraryId = Book::find($bookId);
+            $memberLibraryId = Member::find($this->memberId);
             
-            if ($bookLibraryId !== $value && $memberLibraryId !== $value && $bookLibraryId !== $memberLibraryId) {
+            if ($bookLibraryId->library_id!== $value && $memberLibraryId->library_id !== $value && $bookLibraryId->library_id !== $memberLibraryId->library_id) {
                 $fail('member library and book library does not match');
             }
         }
