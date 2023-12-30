@@ -10,23 +10,32 @@ use Illuminate\Http\Request;
 use ParentIterator;
 
 class BookController extends Controller
-{
-    public function getAllBooks($libraryId = null)
+{        
+    /**
+     * Method getAllBooks
+     *
+     * @param int $libraryId [explicite description]
+     *
+     * @return void
+     */
+    public function getAllBooks(int $libraryId)
     {
-        if ($libraryId) {
-            $book = Book::where('library_id', $libraryId)->get();
-        } else {
-            $book = Book::all();
-        }
-        
-        return $book->isEmpty() ? PARENT::createResponse('Book not found', 404) : PARENT::createResponse('success', 200, BookResource::collection($book));
+        $book = Book::where('library_id', $libraryId)->get();
+        return $book->isEmpty() ? $this->createResponse('Book not found', 404) : $this->createResponse('success', 200, new BookResource($book));
     }
-
-    public function getSpecificBook($id)
+    
+    /**
+     * Method getSpecificBook
+     *
+     * @param $id $id [explicite description]
+     *
+     * @return void
+     */
+    public function getSpecificBook(int $id)
     {
         $book = Book::find($id);
 
-        return $book->isEmpty() ? PARENT::createResponse('Book not found', 404) : PARENT::createResponse('success', 200, BookResource::collection($book));
+        return $book === null ? $this->createResponse('Book not found', 404) : $this->createResponse('success', 200, new BookResource($book));
     }
 
     public function insertBook(Request $request)
@@ -42,7 +51,7 @@ class BookController extends Controller
     
             $book = Book::create($validatedData);
     
-            return $book ? PARENT::createResponse('Book inserted successfully', 201, new BookResource($book)) : PARENT::createResponse('Book insertion failed', 500);
+            return $book ? $this->createResponse('Book inserted successfully', 201, new BookResource($book)) : $this->createResponse('Book insertion failed', 500);
         }
         catch (Exception $e) {
             if ($e->getCode() !== 0) {
@@ -50,7 +59,7 @@ class BookController extends Controller
             } else {
                 $message = $e->getMessage();
             }
-            return PARENT::createResponse($message, 500);
+            return $this->createResponse($message, 500);
         }
     }
 
@@ -73,7 +82,7 @@ class BookController extends Controller
 
             $book->save();
 
-            return PARENT::createResponse('Book updated successfully', 201, new BookResource($book));
+            return $this->createResponse('Book updated successfully', 201, new BookResource($book));
         }
         catch (Exception $e) {
             if ($e->getCode() !== 0) {
@@ -81,7 +90,7 @@ class BookController extends Controller
             } else {
                 $message = $e->getMessage();
             }
-            return PARENT::createResponse($message, 500);
+            return $this->createResponse($message, 500);
         }
     }
 }

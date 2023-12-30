@@ -9,23 +9,18 @@ use Exception;
 
 class LibraryController extends Controller
 {
-    public function getLibrary($id = null)
+    public function getLibrary(int $id)
     {
-        if ($id) {
-            $library = Library::find($id);
+        $library = Library::find($id);
 
-            return new LibraryResource($library);
-        } else {
-            $library = Library::all();
-        }
-        return $library->isEmpty() ? PARENT::createResponse('Library not found', 404) : PARENT::createResponse('success', 200, LibraryResource::collection($library));
+        return $library === null ? PARENT::createResponse('Library not found', 404) : PARENT::createResponse('success', 200, LibraryResource::collection($library));
     }
 
     public function insertLibrary(Request $request)
     {
         try {
             $validatedData = $request->validate([
-                'library_name' => 'required|string|max:50',
+                'library_name'    => 'required|string|max:50',
                 'library_address' => 'required|string|max:225',
             ]);
 

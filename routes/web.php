@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\BookController;
-use App\Http\Controllers\LibraryController;
+use App\Http\Controllers\MemberController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,16 +19,16 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::middleware(['web'])->group(function () {
-    Route::get('/books/{libraryId?}', [BookController::class, 'getAllBooks']);
-    Route::get('/book/{id}', [BookController::class, 'getSpecificBook']);
-    Route::post('/insert/book', [BookController::class, 'insertBook']);
-    Route::post('/update/book', [BookController::class, 'updateBook']);
+Route::get('/books/{libraryId}', function ($id) {
+    $bookController = new BookController();
+    $data = $bookController->getAllBooks($id);
+    
+    return view('/library/home', ['data' => $data]);
 });
 
-Route::middleware(['web'])->group(function () {
-    Route::get('/library/{libraryId?}', [LibraryController::class, 'getLibrary']);
-    Route::post('/insert/library', [LibraryController::class, 'insertLibrary']);
-    Route::post('/update/library', [LibraryController::class, 'updateLibrary']);
-});
+Route::get('/profile/{memberId}', function ($id) {
+    $memberController = new MemberController();
+    $data = $memberController->getSpecificMember($id);
 
+    return view('/member/profile', ['data' => $data]);
+});

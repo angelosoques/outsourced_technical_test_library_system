@@ -9,25 +9,42 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class MemberController extends Controller
-{
-    public function getMembers($id = null)
+{    
+    /**
+     * Method getMembers
+     *
+     * @param $id $id [explicite description]
+     *
+     * @return void
+     */
+    public function getMembers($id)
     {
-        if ($id) {
-            $members = Member::where("library_id", $id)->get();
-        } else {
-            $members = Member::all();
-        }
+        $members = Member::where("library_id", $id)->get();
 
-        return $members->is_Empty() ? PARENT::createResponse('Member not found', 404) : PARENT::createResponse('success', 200, MemberResource::collection($members));
+        return $members->isEmpty() ? PARENT::createResponse('Member not found', 404) : PARENT::createResponse('success', 200, MemberResource::collection($members));
     }
-
+    
+    /**
+     * Method getSpecificMember
+     *
+     * @param $id $id [explicite description]
+     *
+     * @return void
+     */
     public function getSpecificMember($id)
     {
         $member = Member::find($id);
 
-        return $member->is_Empty() ? PARENT::createResponse('Member not found', 404) : PARENT::createResponse('success', 200, new MemberResource($member));
+        return $member === null ? PARENT::createResponse('Member not found', 404) : PARENT::createResponse('success', 200, new MemberResource($member));
     }
-
+    
+    /**
+     * Method insertMember
+     *
+     * @param Request $request [explicite description]
+     *
+     * @return void
+     */
     public function insertMember(Request $request)
     {
         try {
@@ -55,7 +72,14 @@ class MemberController extends Controller
             return PARENT::createResponse($e->getMessage(), 500);
         }
     }
-
+    
+    /**
+     * Method updateMember
+     *
+     * @param Request $request [explicite description]
+     *
+     * @return void
+     */
     public function updateMember(Request $request)
     {
         try {
@@ -74,13 +98,13 @@ class MemberController extends Controller
 
             if (Hash::check($validatedData['password'], $member['password'])) {
                 array_key_exists('email_address', $validatedData) ? $member->email_address = $validatedData['email_address'] : "";
-                array_key_exists('new_password', $validatedData) ? $member->password = Hash::make($validatedData['new_password']) : "";
-                array_key_exists('first_name', $validatedData) ? $member->password = $validatedData['first_name'] : "";
-                array_key_exists('last_name', $validatedData) ? $member->password = $validatedData['last_name'] : "";
-                array_key_exists('address', $validatedData) ? $member->password = $validatedData['address'] : "";
-                array_key_exists('contact_no', $validatedData) ? $member->password = $validatedData['contact_no'] : "";
+                array_key_exists('new_password', $validatedData)  ? $member->password = Hash::make($validatedData['new_password']) : "";
+                array_key_exists('first_name', $validatedData)    ? $member->first_name = $validatedData['first_name'] : "";
+                array_key_exists('last_name', $validatedData)     ? $member->last_name = $validatedData['last_name'] : "";
+                array_key_exists('address', $validatedData)       ? $member->address = $validatedData['address'] : "";
+                array_key_exists('contact_no', $validatedData)    ? $member->contact_no = $validatedData['contact_no'] : "";
             } else {
-                return PARENT::createResponse('Passwords do not match', 500);
+                return PARENT::createResponse('Wrong password', 500);
             }
 
             $member->save();
