@@ -17,6 +17,7 @@ class matchLibraryId implements ValidationRule
     }
 
     /**
+     * This validation rule will check whether the member and book has the same library ID
      * Run the validation rule.
      *
      * @param  \Closure(string): \Illuminate\Translation\PotentiallyTranslatedString  $fail
